@@ -1,7 +1,6 @@
-import { SignInWithGithub } from "./components/SignInWithGithub";
 
 
-export default function Home() {
+export default async function Home() {
   return (
     <main>
       hello

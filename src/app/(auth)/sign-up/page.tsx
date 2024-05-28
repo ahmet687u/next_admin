@@ -1,9 +1,11 @@
-import React from 'react'
+import { signUpAction } from "@/lib/actions/auth.action"
 
 const SignUp = () => {
   return (
-    <div>
-      Sign up page
+    <div className="h-screen flex items-center justify-center">
+      <form action={signUpAction}>
+        
+      </form>
     </div>
   )
 }
