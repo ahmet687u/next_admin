@@ -1,11 +1,20 @@
-import React from 'react'
-
-const SignIn = () => {
+import { signIn, auth, providerMap } from "@/auth"
+ 
+export default async function SignInPage() {
   return (
-    <div>
-      Sign in page
+    <div className="flex flex-col gap-2">
+      {Object.values(providerMap).map((provider) => (
+        <form
+          action={async () => {
+            "use server"
+            await signIn(provider.id)
+          }}
+        >
+          <button type="submit">
+            <span>Sign in with {provider.name}</span>
+          </button>
+        </form>
+      ))}
     </div>
   )
 }
-
-export default SignIn
