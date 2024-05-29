@@ -1,5 +1,6 @@
 "use client";
 
+import toast from "react-hot-toast";
 import FormGroup from "../ui/FormGroup";
 import SubmitButton from "../SubmitButton";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +18,12 @@ const Form = () => {
   });
 
   const onSubmit: SubmitHandler<TSignUpSchema> = async (data) => {
-    const helaVelaKelVela = await signUpAction(data);
+    const response = await signUpAction(data);
+    if(response.success) {
+      toast.success(response?.message as string)
+      return
+    }
+    toast.error(response?.message as string)
   };
 
   return (

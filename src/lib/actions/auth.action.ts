@@ -1,11 +1,14 @@
 "use server";
 
+import bcrypt from "bcrypt";
 import { prisma } from "../client";
-import type { TReturnPost } from "@/types";
+import type { TReturnPost, TTimeStamp } from "@/types";
 import getErrorMessage from "@/utils/error"
 import { TSignUpSchema, schema } from "@/components/signup/schema";
 
-export const signUpAction = async (formdata: TSignUpSchema): Promise<TReturnPost> => {
+type TReturnAuth = TReturnPost<Omit<TSignUpSchema, "password"> & TTimeStamp>
+
+export const signUpAction = async (formdata: TSignUpSchema): Promise<TReturnAuth> => {
   try {
     const parsed = schema.safeParse(formdata)
 
@@ -15,11 +18,15 @@ export const signUpAction = async (formdata: TSignUpSchema): Promise<TReturnPost
      */
     if (!parsed.success) return { success: false, error: parsed.error.issues.map(issue => issue.message) }
 
-    //--- successful validation - add user to database
-    const response = await prisma.user.create({ data: parsed.data })
-    console.log(response);
+    //---  hash password
+    const hash = await bcrypt.hash(parsed.data.password, 8)
+    const sendData = { ...parsed.data, password: hash }
 
-    return { success: true, message: "Validation Başarılı" }
+    //--- create user in the database
+    const response = await prisma.user.create({ data: sendData })
+
+    //--- we return the message if the user addition was successful
+    return { success: true, message: `${response.name} adlı kullanıcı başarıyla eklendi` }
   } catch (error) {
     return { message: getErrorMessage(error), success: false }
   }
