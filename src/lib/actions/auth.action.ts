@@ -1,12 +1,21 @@
+"use server";
+
+import type { TReturnPost } from "@/types";
 import errorConvertToString from "@/utils/error"
+import { TSignUpSchema, schema } from "@/components/signup/schema";
 
-export const signUpAction = async (formdata: FormData) => {
+export const signUpAction = async (formdata: TSignUpSchema): Promise<TReturnPost> => {
   try {
-    const { email, password } = Object.fromEntries(formdata)
-    if(!email || ! password) throw new Error("Tüm alanları doldurduğunuzdan emin olun")
+    console.log(formdata);
+    const parsed = schema.safeParse(formdata)
 
-    console.log(email, password)
+    if (!parsed.success) return { success: false, error: parsed.error.issues.map(issue => issue.message) }
+
+    //--- validation unfailed 
+    console.log("halo")
+
+    return { success: true, message: "Validation Başarılı" }
   } catch (error) {
-    throw new Error(errorConvertToString(error))
+    return { message: errorConvertToString(error), success: false }
   }
 }

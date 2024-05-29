@@ -1,13 +1,12 @@
-import { signUpAction } from "@/lib/actions/auth.action"
+import Form from "@/components/signup/Form";
+
 
 const SignUp = () => {
   return (
     <div className="h-screen flex items-center justify-center">
-      <form action={signUpAction}>
-        
-      </form>
+      <Form />
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
